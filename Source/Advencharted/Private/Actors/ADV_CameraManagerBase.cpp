@@ -28,12 +28,14 @@ void AADV_CameraManagerBase::UpdateViewTargetInternal(FTViewTarget& OutVT, float
 	FRotator CameraRotation = UKismetMathLibrary::FindLookAtRotation(EndTraceLocation, StartTraceLocation);
 	
 	FHitResult HitResult;
+	TArray<AActor*> ActorsToIgnore = {OutVT.Target};
 	UKismetSystemLibrary::SphereTraceSingle(this, StartTraceLocation, EndTraceLocation, CameraTraceRadius,
-	                                        UEngineTypes::ConvertToTraceType(ECC_Camera), false, TArray<AActor*>(),
+	                                        UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore,
 	                                        EDrawDebugTrace::None, HitResult, true);
 
 	OutVT.POV.Rotation = CameraRotation;
-	OutVT.POV.Location = HitResult.bBlockingHit ? HitResult.ImpactPoint : EndTraceLocation;
+	FVector NewLocation = HitResult.bBlockingHit ? HitResult.Location : EndTraceLocation;
+	OutVT.POV.Location = FMath::VInterpTo(GetCameraLocation(), NewLocation, DeltaTime, RotationSpeed);
 	FTransform CameraTransform = FTransform(CameraRotation, OutVT.POV.Location);
 	OutVT.POV.Location += CameraTransform.TransformVector(CameraOffset);
 }

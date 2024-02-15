@@ -34,7 +34,6 @@ public:
 	float CameraTraceRadius = 10.0f;
 
 protected:
-	UPROPERTY()
 	FRotator TargetRotation = FRotator(-20.0f, 0.0f, 0.0f);
 
 public:
