@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Actors/ADV_CameraManagerBase.h"
+#include "General/ADV_CameraManagerBase.h"
 
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -35,7 +35,7 @@ void AADV_CameraManagerBase::UpdateViewTargetInternal(FTViewTarget& OutVT, float
 
 	OutVT.POV.Rotation = CameraRotation;
 	FVector NewLocation = HitResult.bBlockingHit ? HitResult.Location : EndTraceLocation;
-	OutVT.POV.Location = FMath::VInterpTo(GetCameraLocation(), NewLocation, DeltaTime, RotationSpeed);
+	OutVT.POV.Location = FMath::VInterpTo(GetCameraLocation(), NewLocation, DeltaTime, LocationInterpSpeed);
 	FTransform CameraTransform = FTransform(CameraRotation, OutVT.POV.Location);
 	OutVT.POV.Location += CameraTransform.TransformVector(CameraOffset);
 }

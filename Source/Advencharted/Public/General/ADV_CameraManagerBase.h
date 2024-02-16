@@ -19,7 +19,7 @@ public:
 	float Distance = 400.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
-	float RotationSpeed = 20.0f;
+	float LocationInterpSpeed = 10.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
 	float PitchLimit = 80.0f;
