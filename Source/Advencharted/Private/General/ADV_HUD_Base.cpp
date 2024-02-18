@@ -63,3 +63,21 @@ void AADV_HUD_Base::RemoveInteractionWidgetFor(AActor* Actor)
 		}
 	}
 }
+
+UInteractionWidgetBase* AADV_HUD_Base::GetInteractionWidgetFor(AActor* Actor)
+{
+	if (!Actor)
+	{
+		UE_LOG(LogAdvencharted, Warning, TEXT("AADV_HUD_Base::GetInteractionWidgetFor: Actor is nullptr"));
+		return nullptr;
+	}
+
+	for (const auto InteractionWidget : InteractionWidgets)
+	{
+		if (InteractionWidget->GetInteractableActor() == Actor)
+		{
+			return InteractionWidget;
+		}
+	}
+	return nullptr;
+}

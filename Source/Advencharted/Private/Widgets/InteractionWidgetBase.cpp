@@ -63,13 +63,10 @@ void UInteractionWidgetBase::InitializeInteractionWidget_Implementation(const UI
 	}
 	InteractableActor = Actor;
 
-	if (!InteractionDefinition->InteractionIcon || InteractionDefinition->InteractionText.IsEmpty())
+	if (InteractionDefinition->InteractionIcon)
 	{
-		UE_LOG(LogAdvencharted, Error, TEXT("UInteractionWidgetBase::InitializeInteractionWidget: InteractionDefinition is missing icon or text"));
-		return;
+		InteractionImage->SetBrushFromTexture(InteractionDefinition->InteractionIcon);
 	}
-
-	InteractionImage->SetBrushFromTexture(InteractionDefinition->InteractionIcon);
 	InteractionTextBlock->SetText(InteractionDefinition->InteractionText);
 	CanvasPanelSlot = Cast<UCanvasPanelSlot>(Slot);
 	UpdatePosition();

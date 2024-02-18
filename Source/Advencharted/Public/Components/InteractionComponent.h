@@ -19,14 +19,27 @@ public:
 	TObjectPtr<USphereComponent> InteractionSphere;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
-	float InteractionRadius = 300.0f;
+	float InteractionRadius = 500.0f;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Interaction")
-	TSet<AActor*> InteractableActors;
+	TSet<UPrimitiveComponent*> InteractableComponents;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
+	float InteractionTraceLength = 200.0f;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
+	float InteractionTraceRadius = 30.0f;
+
+private:
+	TTuple<UPrimitiveComponent*, float> CurrentInteraction = TTuple<UPrimitiveComponent*, float>();
+
+	AADV_HUD_Base* HUD;
 
 public:
 	UInteractionComponent();
-
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void UpdateInteraction();
+	
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -34,12 +47,11 @@ public:
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION(BlueprintCallable)
-	void Interact(AActor* TargetActor);
+	void Interact();
 	
 	virtual void BeginPlay() override;
 	void CreateIntearctionSphere();
 
-	virtual void OnInteractionFound(AActor* Actor);
-	virtual void OnInteractionLost(AActor* Actor);
-	AADV_HUD_Base* GetHUD();
+	virtual void OnInteractionFound(AActor* Actor, UPrimitiveComponent* HitComponent);
+	virtual void OnInteractionLost(AActor* Actor, UPrimitiveComponent* HitComponent);
 };

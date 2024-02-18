@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "Widgets/ActorInspectorWidgetBase.h"
 #include "Widgets/InteractionWidgetBase.h"
 #include "Widgets/MainWidgetBase.h"
 #include "ADV_HUD_Base.generated.h"
@@ -14,16 +15,20 @@ class ADVENCHARTED_API AADV_HUD_Base : public AHUD
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|HUD")
-	TObjectPtr<UMainWidgetBase> MainWidget;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD")
+	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD|Settings")
 	TSubclassOf<UMainWidgetBase> MainWidgetClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD")
+	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD|Settings")
 	TSubclassOf<UInteractionWidgetBase> InteractionWidgetClass;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|HUD", Instanced)
+	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD|Settings")
+	TSubclassOf<UActorInspectorWidgetBase> InspectorWidgetClass;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Advenchanted|HUD")
+	TObjectPtr<UMainWidgetBase> MainWidget;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Advenchanted|HUD")
 	TArray<TObjectPtr<UInteractionWidgetBase>> InteractionWidgets;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD", Instanced)
@@ -37,4 +42,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Advenchanted|HUD")
 	void RemoveInteractionWidgetFor(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Advenchanted|HUD")
+	UInteractionWidgetBase* GetInteractionWidgetFor(AActor* Actor);
 };

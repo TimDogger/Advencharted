@@ -37,6 +37,16 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Advencharted|InteractionWidgetBase")
 	void InitializeInteractionWidget(const UInteractionDefinition* InteractionDefinition, AActor* Actor);
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "Advencharted|InteractionWidgetBase")
+	void OnReadyToInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Advencharted|InteractionWidgetBase")
+	void OnNotReadyToInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Advencharted|InteractionWidgetBase")
+	void OnInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
+
+
 	AActor* GetInteractableActor() const;
 	void UpdatePosition();
 };

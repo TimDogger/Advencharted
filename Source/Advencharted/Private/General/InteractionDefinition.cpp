@@ -7,5 +7,5 @@
 
 bool UInteractionDefinition::IsValid()
 {
-	return (!InteractionText.IsEmpty() && InteractionIcon && InteractionWidgetClass);
+	return (!InteractionText.IsEmpty() && InteractionWidgetClass);
 }

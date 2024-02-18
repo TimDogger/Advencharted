@@ -15,7 +15,7 @@ class UInteractionDefinition : public UDataAsset
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Advenchanted|Interaction")
-	FText InteractionText;
+	FText InteractionText = FText::FromString("Interact");
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Advenchanted|Interaction")
 	TObjectPtr<UTexture2D> InteractionIcon;
@@ -23,9 +23,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Advenchanted|Interaction")
 	TSubclassOf<UInteractionWidgetBase> InteractionWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Advenchanted|Interaction")
+	float InteractionRange = 80.0f;
+
 public:
 	// Called when the interaction is triggered. This is a blueprint implementable event, so it can be overridden in blueprints. 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = "Advenchanted|Interaction")
 	void OnInteract(AActor* Interactor, AActor* Interactable);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Advenchanted|Interaction")

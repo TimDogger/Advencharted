@@ -20,21 +20,29 @@ class ADVENCHARTED_API IInteractable
 
 public:
 	// Called when the player interacts with the object
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
-	void OnInteract();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interactible")
+	void OnInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
 
-	// Called when the player is near the interactable object
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
-	void OnInteractionFound();
+	// Called when the player nears the interactable object and sees the interaction prompt
+	UFUNCTION(BlueprintNativeEvent, Category = "Interactible")
+	void OnInteractionFound(AActor* Interactor, UPrimitiveComponent* HitComponent);
 
-	// Called when the player is no longer near the interactable object
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
-	void OnInteractionLost();
+	// Called when the player moves away from the interactable object and the interaction prompt disappears
+	UFUNCTION(BlueprintNativeEvent, Category = "Interactible")
+	void OnInteractionLost(AActor* Interactor, UPrimitiveComponent* HitComponent);
 
-	// Returns true if the player can interact with the object
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
-	bool CanInteract();
+	// Called when the player is near the interactable object and can interact with it
+	UFUNCTION(BlueprintNativeEvent, Category = "Interactible")
+	void OnReadyToInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	// Called when the player is near the interactable object but cannot interact with it
+	UFUNCTION(BlueprintNativeEvent, Category = "Interactible")
+	void OnNotReadyToInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
+
+	// Returns the interaction definition for the interactable object
+	UFUNCTION(BlueprintNativeEvent, Category = "Interactible")
 	UInteractionDefinition* GetInteractionDefinition();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	UPrimitiveComponent* GetInteractableComponent();
 };
