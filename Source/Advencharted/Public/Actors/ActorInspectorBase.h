@@ -3,23 +3,64 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "UObject/Object.h"
 #include "ActorInspectorBase.generated.h"
 
-UCLASS()
+UCLASS(Abstract, Blueprintable, BlueprintType)
 class ADVENCHARTED_API AActorInspectorBase : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
-	AActorInspectorBase();
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="GridInventory")
+	TObjectPtr<AActor> ItemActor;
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="GridInventory")
+	TObjectPtr<UTextureRenderTarget2D> ItemRenderTarget;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="GridInventory")
+	TArray<UPrimitiveComponent*> PrimitiveComponents;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="GridInventory")
+	USceneCaptureComponent2D* SceneCapture;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category="GridInventory")
+	USpringArmComponent* SpringArm;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="GridInventory")
+	float DevaultFov = 90.0f;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="GridInventory")
+	FRotator DefaultRotation = FRotator::ZeroRotator;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="GridInventory")
+	FRotator DefaultRotationOffset = FRotator(0.0f, 0.0f, 90.0f);
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category="GridInventory")
+	float CameraDistanceBounceRatio = 2.0f;
 
 public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	AActorInspectorBase();
+
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UFUNCTION(BlueprintCallable, Category="GIS|Snapper")
+	virtual UTextureRenderTarget2D* GetActorSnapshot(AActor* Actor,
+	                                                 int32 ResolutionX, int32 ResolutionY, UTextureRenderTarget2D* RenderTarget = nullptr);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="GIS|Snapper")
+	void ResetCamera();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="GIS|Snapper")
+	void RotateCamera(FRotator Delta);
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="GIS|Snapper")
+	void SetCameraDistance(float NewDistance);
+
+protected:
+	float GetDistance() const;
+
+	virtual void PreCaptureSetup(AActor* NewActor);
+	void SetupPrimitives(bool bForCapture);
 };

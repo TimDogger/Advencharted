@@ -21,4 +21,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Advenchanted|Library", meta = (WorldContext = "WorldContextObject"))
 	static UInteractionDefinition* GetDefaultInteractionDefinition(UObject* WorldContextObject);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Advenchanted|Library", meta = (WorldContext = "WorldContextObject"))
+	static class AADV_HUD_Base* GetAdvenchantedHUD(UObject* WorldContextObject);
 };

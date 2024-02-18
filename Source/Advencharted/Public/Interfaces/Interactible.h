@@ -45,4 +45,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
 	UPrimitiveComponent* GetInteractableComponent();
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	FVector GetInteractableLocation(bool& bWorldLocation);
 };

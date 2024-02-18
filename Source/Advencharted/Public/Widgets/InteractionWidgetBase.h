@@ -6,8 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Image.h"
-#include "Components/TextBlock.h"
-#include "General/InteractionDefinition.h"
 #include "InteractionWidgetBase.generated.h"
 
 UCLASS(Abstract, Blueprintable, BlueprintType)
@@ -19,9 +17,6 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
 	TObjectPtr<UImage> InteractionImage;
 
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<UTextBlock> InteractionTextBlock;
-
 protected:
 	UPROPERTY()
 	TObjectPtr<AActor> InteractableActor = nullptr;
@@ -31,22 +26,11 @@ protected:
 
 public:
 	UInteractionWidgetBase(const FObjectInitializer& ObjectInitializer);
+	UCanvasPanelSlot* GetCanvasPanelSlot() const;
 
-	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	AActor* GetInteractableActor();
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Advencharted|InteractionWidgetBase")
-	void InitializeInteractionWidget(const UInteractionDefinition* InteractionDefinition, AActor* Actor);
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Advencharted|InteractionWidgetBase")
-	void OnReadyToInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Advencharted|InteractionWidgetBase")
-	void OnNotReadyToInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
-
-	UFUNCTION(BlueprintImplementableEvent, Category = "Advencharted|InteractionWidgetBase")
-	void OnInteract(AActor* Interactor, UPrimitiveComponent* HitComponent);
-
-
-	AActor* GetInteractableActor() const;
-	void UpdatePosition();
+	void InitializeInteractionWidget(AActor* Actor);
 };

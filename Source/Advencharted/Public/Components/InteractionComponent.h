@@ -8,6 +8,7 @@
 #include "General/ADV_HUD_Base.h"
 #include "InteractionComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnInteractionUpdated, UPrimitiveComponent*, HitComponent);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class ADVENCHARTED_API UInteractionComponent : public UActorComponent
@@ -30,28 +31,41 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
 	float InteractionTraceRadius = 30.0f;
 
-private:
-	TTuple<UPrimitiveComponent*, float> CurrentInteraction = TTuple<UPrimitiveComponent*, float>();
+	UPROPERTY(BlueprintAssignable, Category = "Interaction")
+	FOnInteractionUpdated OnCurrentInteractionUpdated;
 
-	AADV_HUD_Base* HUD;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
+	FOnInteractionUpdated OnInteractionFound;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
+	FOnInteractionUpdated OnInteractionLost;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
+	bool bDrawDebug = false;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Interaction")
+	TEnumAsByte<ETraceTypeQuery> TraceType = UEngineTypes::ConvertToTraceType(ECC_Visibility);
+
+private:
+	TObjectPtr<UPrimitiveComponent> CurrentInteraction = nullptr;
 
 public:
 	UInteractionComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	void UpdateInteraction();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintNativeEvent)
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintNativeEvent)
 	void OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 	UFUNCTION(BlueprintCallable)
 	void Interact();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Interaction")
+	UPrimitiveComponent* GetCurrentInteraction() const { return CurrentInteraction; }
 	
 	virtual void BeginPlay() override;
 	void CreateIntearctionSphere();
-
-	virtual void OnInteractionFound(AActor* Actor, UPrimitiveComponent* HitComponent);
-	virtual void OnInteractionLost(AActor* Actor, UPrimitiveComponent* HitComponent);
 };

@@ -29,11 +29,22 @@ UInteractionDefinition* UAdvenchartedLibrary::GetInteractionDefinitionForActor(U
 
 UInteractionDefinition* UAdvenchartedLibrary::GetDefaultInteractionDefinition(UObject* WorldContextObject)
 {
-	auto HUD = Cast<AADV_HUD_Base>(WorldContextObject->GetWorld()->GetFirstPlayerController()->GetHUD());
+	auto HUD = GetAdvenchantedHUD(WorldContextObject);
 	if (!HUD)
 	{
 		UE_LOG(LogAdvencharted, Error, TEXT("UAdvenchartedLibrary::GetDefaultInteractionDefinition: HUD is nullptr"));
 		return nullptr;
 	}
 	return HUD->DefaultInteractionDefinition;
+}
+
+AADV_HUD_Base* UAdvenchartedLibrary::GetAdvenchantedHUD(UObject* WorldContextObject)
+{
+	auto HUD = Cast<AADV_HUD_Base>(WorldContextObject->GetWorld()->GetFirstPlayerController()->GetHUD());
+	if (!HUD)
+	{
+		UE_LOG(LogAdvencharted, Error, TEXT("UAdvenchartedLibrary::GetDefaultInteractionDefinition: HUD is nullptr"));
+		return nullptr;
+	}
+	return HUD;
 }

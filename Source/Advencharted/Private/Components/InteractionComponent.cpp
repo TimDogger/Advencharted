@@ -4,8 +4,6 @@
 #include "Components/InteractionComponent.h"
 
 #include "General/AdvenchartedLibrary.h"
-#include "General/AdvenchartedLogCategory.h"
-#include "General/ADV_HUD_Base.h"
 #include "Interfaces/Interactible.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -29,10 +27,10 @@ void UInteractionComponent::UpdateInteraction()
 {
 	if (InteractableComponents.IsEmpty())
 	{
-		if (CurrentInteraction.Key)
+		if (CurrentInteraction)
 		{
-			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction.Key->GetOwner(), GetOwner(),
-															CurrentInteraction.Key);
+			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction->GetOwner(), GetOwner(),
+															CurrentInteraction);
 		}
 		return;
 	}
@@ -43,10 +41,11 @@ void UInteractionComponent::UpdateInteraction()
 	auto CameraLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
 
 	TArray<FHitResult> HitResults;
+	EDrawDebugTrace::Type DebugType = bDrawDebug ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::None;
 	UKismetSystemLibrary::SphereTraceMulti(GetWorld(), CameraLocation,
 	                                       CameraLocation + CameraForward * InteractionTraceLength,
-	                                       InteractionTraceRadius, UEngineTypes::ConvertToTraceType(ECC_Visibility),
-	                                       false, {}, EDrawDebugTrace::None, HitResults, true);
+	                                       InteractionTraceRadius, TraceType,
+	                                       false, {}, DebugType, HitResults, true);
 
 	TTuple<UPrimitiveComponent*, float> NewInteracion = TTuple<UPrimitiveComponent*, float>(nullptr, -1.0f);
 	for (const auto& HitResult : HitResults)
@@ -67,73 +66,76 @@ void UInteractionComponent::UpdateInteraction()
 
 	if (NewInteracion.Key)
 	{
-		if (NewInteracion.Key == CurrentInteraction.Key) return;
-		if (CurrentInteraction.Key)
+		if (NewInteracion.Key == CurrentInteraction) return;
+		if (CurrentInteraction)
 		{
-			if (auto Widget = HUD->GetInteractionWidgetFor(CurrentInteraction.Key->GetOwner()))
-			{
-				Widget->OnNotReadyToInteract(GetOwner(), CurrentInteraction.Key);
-			}
-			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction.Key->GetOwner(), GetOwner(),
-			                                                CurrentInteraction.Key);
+			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction->GetOwner(), GetOwner(),
+			                                                CurrentInteraction);
 		}
-		CurrentInteraction = NewInteracion;
-		if (auto Widget = HUD->GetInteractionWidgetFor(CurrentInteraction.Key->GetOwner()))
-		{
-			Widget->OnReadyToInteract(GetOwner(), CurrentInteraction.Key);
-		}
-		IInteractable::Execute_OnReadyToInteract(CurrentInteraction.Key->GetOwner(), GetOwner(),
-		                                             CurrentInteraction.Key);
-		UE_LOG(LogAdvencharted, Log,
-		       TEXT("UInteractionComponent::UpdateInteraction: NewInteracion: %s  DotProduct: %f"),
-		       *NewInteracion.Key->GetOwner()->GetName(), NewInteracion.Value);
+		CurrentInteraction = NewInteracion.Key;
+		IInteractable::Execute_OnReadyToInteract(CurrentInteraction->GetOwner(), GetOwner(),
+		                                             CurrentInteraction);
+		OnCurrentInteractionUpdated.Broadcast(CurrentInteraction);
 	}
 	else
 	{
-		if (CurrentInteraction.Key)
+		if (CurrentInteraction)
 		{
-			if (auto Widget = HUD->GetInteractionWidgetFor(CurrentInteraction.Key->GetOwner()))
-			{
-				Widget->OnNotReadyToInteract(GetOwner(), CurrentInteraction.Key);
-			}
-			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction.Key->GetOwner(), GetOwner(),
-			                                                CurrentInteraction.Key);
+			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction->GetOwner(), GetOwner(),
+			                                                CurrentInteraction);
 		}
-		CurrentInteraction = TTuple<UPrimitiveComponent*, float>(nullptr, -1.0f);
-	
+		CurrentInteraction = nullptr;
+		OnCurrentInteractionUpdated.Broadcast(CurrentInteraction);
 	}
 }
 
-void UInteractionComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void UInteractionComponent::OnOverlapBegin_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                            const FHitResult& SweepResult)
 {
-	if (!OtherActor) return;
-	OnInteractionFound(OtherActor, OtherComp);
+	if (OtherActor->Implements<UInteractable>())
+	{
+		auto InteractablePrimitive = IInteractable::Execute_GetInteractableComponent(OtherActor);
+		if (!InteractablePrimitive)
+		{
+			auto FirstPrimitive = OtherActor->FindComponentByClass<UPrimitiveComponent>();
+			if (FirstPrimitive && FirstPrimitive == OtherComp)
+			{
+				InteractablePrimitive = OtherComp;
+			}
+			else return;
+		}
+		IInteractable::Execute_OnInteractionFound(OtherActor, GetOwner(), InteractablePrimitive);		
+		
+		InteractableComponents.Add(InteractablePrimitive);
+		OnInteractionFound.Broadcast(InteractablePrimitive);
+	}
 }
 
-void UInteractionComponent::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void UInteractionComponent::OnOverlapEnd_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if (!OtherActor) return;
-	OnInteractionLost(OtherActor, OtherComp);
+	if (OtherActor->Implements<UInteractable>())
+	{
+		auto InteractablePrimitive = IInteractable::Execute_GetInteractableComponent(OtherActor);
+		if (!InteractablePrimitive) InteractablePrimitive = OtherComp;
+		IInteractable::Execute_OnInteractionLost(OtherActor, GetOwner(), InteractablePrimitive);
+		InteractableComponents.Remove(InteractablePrimitive);
+		OnInteractionLost.Broadcast(InteractablePrimitive);
+	}
 }
 
 void UInteractionComponent::Interact()
 {
-	if (!CurrentInteraction.Key) return;
-	auto TargetActor = CurrentInteraction.Key->GetOwner();
+	if (!CurrentInteraction) return;
+	auto TargetActor = CurrentInteraction->GetOwner();
 	if (TargetActor->Implements<UInteractable>())
 	{
 		if (const auto InteractionDefinition = IInteractable::Execute_GetInteractionDefinition(TargetActor))
 		{
 			InteractionDefinition->OnInteract(GetOwner(), TargetActor);
 		}
-		if (auto Widget = HUD->GetInteractionWidgetFor(TargetActor))
-		{
-			Widget->OnInteract(GetOwner(), CurrentInteraction.Key);
-		}
-		IInteractable::Execute_OnInteract(TargetActor, GetOwner(), CurrentInteraction.Key);
+		IInteractable::Execute_OnInteract(TargetActor, GetOwner(), CurrentInteraction);
 	}
 }
 
@@ -141,12 +143,9 @@ void UInteractionComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	HUD = Cast<AADV_HUD_Base>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	if (!HUD)
-	{
-		UE_LOG(LogAdvencharted, Error, TEXT("UIntearctionComponent::BeginPlay: HUD is nullptr"));
-	}
-	CreateIntearctionSphere();
+	// Do a delayed interaction sphere creation to avoid InteractionWidgets not being added to the HUD in the first frame
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UInteractionComponent::CreateIntearctionSphere, 0.5f, false);
 }
 
 void UInteractionComponent::CreateIntearctionSphere()
@@ -165,51 +164,5 @@ void UInteractionComponent::CreateIntearctionSphere()
 			InteractionSphere->SetSphereRadius(InteractionRadius);
 			InteractionSphere->SetCollisionProfileName(TEXT("InteractionTrigger"));
 		}
-	}
-}
-
-void UInteractionComponent::OnInteractionFound(AActor* Actor, UPrimitiveComponent* HitComponent)
-{
-	if (!Actor) return;
-	if (Actor->Implements<UInteractable>())
-	{
-		auto InteractablePrimitive = IInteractable::Execute_GetInteractableComponent(Actor);
-		if (!InteractablePrimitive)
-		{
-			auto FirstPrimitive = Actor->FindComponentByClass<UPrimitiveComponent>();
-			if (FirstPrimitive && FirstPrimitive == HitComponent)
-			{
-				InteractablePrimitive = HitComponent;
-			}
-			else return;
-		}
-		IInteractable::Execute_OnInteractionFound(Actor, GetOwner(), InteractablePrimitive);
-
-		HUD->ShowInteractionWidgetFor(Actor);
-		auto InteractionWidget = HUD->GetInteractionWidgetFor(Actor);
-		if (InteractionWidget && InteractionWidget->Implements<UInteractable>())
-		{
-			IInteractable::Execute_OnInteractionFound(InteractionWidget, GetOwner(), InteractablePrimitive);
-		}
-		InteractableComponents.Add(InteractablePrimitive);
-	}
-}
-
-void UInteractionComponent::OnInteractionLost(AActor* Actor, UPrimitiveComponent* HitComponent)
-{
-	if (!Actor) return;
-	if (Actor->Implements<UInteractable>())
-	{
-		auto InteractablePrimitive = IInteractable::Execute_GetInteractableComponent(Actor);
-		if (!InteractablePrimitive) InteractablePrimitive = HitComponent;
-		IInteractable::Execute_OnInteractionLost(Actor, GetOwner(), InteractablePrimitive);
-		
-		auto InteractionWidget = HUD->GetInteractionWidgetFor(Actor);
-		if (InteractionWidget && InteractionWidget->Implements<UInteractable>())
-		{
-			IInteractable::Execute_OnInteractionLost(InteractionWidget, GetOwner(), InteractablePrimitive);
-		}
-		HUD->RemoveInteractionWidgetFor(Actor);
-		InteractableComponents.Remove(InteractablePrimitive);
 	}
 }

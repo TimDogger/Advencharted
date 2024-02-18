@@ -3,6 +3,117 @@
 
 #include "Widgets/MainWidgetBase.h"
 
+#include "Actors/ADV_MainCharacterBase.h"
+#include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/InteractionComponent.h"
+#include "Components/TextBlock.h"
+#include "General/AdvenchartedLibrary.h"
+#include "General/AdvenchartedLogCategory.h"
+#include "Interfaces/Interactible.h"
+#include "Widgets/InteractionKeyWidgetBase.h"
+
 UMainWidgetBase::UMainWidgetBase(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
+}
+
+void UMainWidgetBase::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+
+	auto PlayerController = GetOwningPlayer();
+	MainCharacter = Cast<AADV_MainCharacterBase>(PlayerController->GetPawn());
+	if (!MainCharacter)
+	{
+		UE_LOG(LogAdvencharted, Warning, TEXT("UMainWidgetBase::NativeOnInitialized: MainCharacter is nullptr"));
+	}
+	MainCharacter->InteractionComponent->OnInteractionFound.AddDynamic(this, &UMainWidgetBase::ShowInteractionWidgetFor);
+	MainCharacter->InteractionComponent->OnInteractionLost.AddDynamic(this, &UMainWidgetBase::RemoveInteractionWidgetFor);
+	MainCharacter->InteractionComponent->OnCurrentInteractionUpdated.AddDynamic(this, &UMainWidgetBase::OnCurrentInteractionUpdated);
+	OnCurrentInteractionUpdated(nullptr);
+}
+
+void UMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+	Super::NativeTick(MyGeometry, InDeltaTime);
+
+	for (const auto InteractionWidget : InteractionWidgets)
+	{
+		const auto Widget = InteractionWidget.Value;
+		FVector2d Position = Widget->GetCanvasPanelSlot()->GetPosition();
+		bool bWorldLocation = false;
+		FVector InteractableLocation = IInteractable::Execute_GetInteractableLocation(InteractionWidget.Key, bWorldLocation);
+		FVector WorldLocation = bWorldLocation ? InteractableLocation : InteractionWidget.Key->GetActorLocation() + InteractableLocation;
+		
+		if (UWidgetLayoutLibrary::ProjectWorldLocationToWidgetPosition(GetOwningPlayer(), WorldLocation, Position, false))
+		{
+			Widget->GetCanvasPanelSlot()->SetPosition(Position);
+			Widget->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			Widget->SetVisibility(ESlateVisibility::Hidden);
+		}	
+	}
+}
+
+void UMainWidgetBase::InspectItem(AActor* Actor)
+{		
+	InspectorWidget->InitializeInspectorWidget(Actor);
+}
+
+void UMainWidgetBase::ShowInteractionWidgetFor(UPrimitiveComponent* InteractionComponent)
+{
+	if (!InteractionComponent)
+	{
+		UE_LOG(LogAdvencharted, Warning, TEXT("UMainWidgetBase::ShowInteractionWwidgetFor: InteractionComponent is nullptr"));
+		return;
+	}
+
+	auto Actor = InteractionComponent->GetOwner();
+	const auto InteractionDefinition = UAdvenchartedLibrary::GetInteractionDefinitionForActor(this, Actor);
+	if (!InteractionDefinition)
+	{
+		UE_LOG(LogAdvencharted, Warning, TEXT("UMainWidgetBase::ShowInteractionWidgetFor: InteractionDefinition is nullptr"));
+		return;
+	}
+
+	auto InteractionWidget = CreateWidget<UInteractionWidgetBase>(GetOwningPlayer(), InteractionDefinition->InteractionWidgetClass);
+	MainCanvas->AddChildToCanvas(InteractionWidget);
+	InteractionWidget->InitializeInteractionWidget(Actor);
+	InteractionWidgets.Add(Actor, InteractionWidget);
+}
+
+void UMainWidgetBase::RemoveInteractionWidgetFor(UPrimitiveComponent* InteractionComponent)
+{
+	if (!InteractionComponent)
+	{
+		UE_LOG(LogAdvencharted, Warning, TEXT("UMainWidgetBase::RemoveInteractionWidgetFor: InteractionComponent is nullptr"));
+		return;
+	}
+
+	auto Actor = InteractionComponent->GetOwner();
+	if (auto InteractionWidget = InteractionWidgets.FindRef(Actor))
+	{
+		InteractionWidget->RemoveFromParent();
+		InteractionWidgets.Remove(Actor);
+	}
+}
+
+void UMainWidgetBase::OnCurrentInteractionUpdated(UPrimitiveComponent* HitComponent)
+{	
+	if (!HitComponent)
+	{
+		InteractionKeyWidget->InteractionTextBlock->SetText(FText::FromString(""));
+		InteractionKeyWidget->SetVisibility(ESlateVisibility::Hidden);
+		return;
+	}
+
+	const auto InteractionDefinition = UAdvenchartedLibrary::GetInteractionDefinitionForActor(this, HitComponent->GetOwner());
+	if (!InteractionDefinition)
+	{
+		UE_LOG(LogAdvencharted, Warning, TEXT("UMainWidgetBase::OnCurrentInteractionUpdated: InteractionDefinition is nullptr"));
+		return;
+	}
+	InteractionKeyWidget->InteractionTextBlock->SetText(InteractionDefinition->InteractionText);
+	InteractionKeyWidget->SetVisibility(ESlateVisibility::Visible);
 }

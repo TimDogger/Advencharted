@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Actors/ActorInspectorBase.h"
 #include "GameFramework/HUD.h"
 #include "Widgets/ActorInspectorWidgetBase.h"
 #include "Widgets/InteractionWidgetBase.h"
@@ -23,26 +24,27 @@ public:
 	TSubclassOf<UInteractionWidgetBase> InteractionWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD|Settings")
-	TSubclassOf<UActorInspectorWidgetBase> InspectorWidgetClass;
+	TSubclassOf<AActorInspectorBase> InspectorClass;
 	
 	UPROPERTY(BlueprintReadOnly, Category = "Advenchanted|HUD")
 	TObjectPtr<UMainWidgetBase> MainWidget;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Advenchanted|HUD")
-	TArray<TObjectPtr<UInteractionWidgetBase>> InteractionWidgets;
+	TArray<TObjectPtr<UInteractionWidgetBase>> InteractionWidgets;	
 
-	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD", Instanced)
-	TObjectPtr<UInteractionDefinition> DefaultInteractionDefinition;
+	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|MainWidgetBase")
+	TObjectPtr<class UInteractionDefinition> DefaultInteractionDefinition;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Advenchanted|HUD")
+	TObjectPtr<AActorInspectorBase> Inspector;
 
 public:
-	virtual void BeginPlay() override;
 	
-	UFUNCTION(BlueprintCallable, Category = "Advenchanted|HUD")
-	void ShowInteractionWidgetFor(AActor* Actor);
-
-	UFUNCTION(BlueprintCallable, Category = "Advenchanted|HUD")
-	void RemoveInteractionWidgetFor(AActor* Actor);
+	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Advenchanted|HUD")
 	UInteractionWidgetBase* GetInteractionWidgetFor(AActor* Actor);
+
+	UFUNCTION(BlueprintCallable, Category = "Advenchanted|HUD")
+	void InspectItem(AActor* Actor);
 };

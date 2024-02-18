@@ -18,9 +18,6 @@ public:
 	FText InteractionText = FText::FromString("Interact");
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Advenchanted|Interaction")
-	TObjectPtr<UTexture2D> InteractionIcon;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Advenchanted|Interaction")
 	TSubclassOf<UInteractionWidgetBase> InteractionWidgetClass;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Advenchanted|Interaction")
