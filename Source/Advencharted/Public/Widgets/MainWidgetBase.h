@@ -38,6 +38,10 @@ public:
 	
 	virtual void NativeOnInitialized() override;
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
+
+	UFUNCTION()
+	void OnInspectorVisibilityChanged(ESlateVisibility InVisibility);
+	
 	void InspectItem(AActor* Actor);
 
 	UFUNCTION()

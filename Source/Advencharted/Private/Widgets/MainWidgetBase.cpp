@@ -30,12 +30,15 @@ void UMainWidgetBase::NativeOnInitialized()
 	MainCharacter->InteractionComponent->OnInteractionLost.AddDynamic(this, &UMainWidgetBase::RemoveInteractionWidgetFor);
 	MainCharacter->InteractionComponent->OnCurrentInteractionUpdated.AddDynamic(this, &UMainWidgetBase::OnCurrentInteractionUpdated);
 	OnCurrentInteractionUpdated(nullptr);
+	
+	InspectorWidget->OnVisibilityChanged.AddDynamic(this, &UMainWidgetBase::OnInspectorVisibilityChanged);
 }
 
 void UMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 
+	if (InspectorWidget->IsVisible()) return;
 	for (const auto InteractionWidget : InteractionWidgets)
 	{
 		const auto Widget = InteractionWidget.Value;
@@ -54,6 +57,24 @@ void UMainWidgetBase::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 			Widget->SetVisibility(ESlateVisibility::Hidden);
 		}	
 	}
+}
+
+void UMainWidgetBase::OnInspectorVisibilityChanged(ESlateVisibility InVisibility)
+{
+	if (InVisibility == ESlateVisibility::Visible)
+	{
+		for (auto InteractionWidget : InteractionWidgets)
+		{
+			InteractionWidget.Value->SetVisibility(ESlateVisibility::Collapsed);
+		}
+	}
+	else
+	{
+		for (auto InteractionWidget : InteractionWidgets)
+		{
+			InteractionWidget.Value->SetVisibility(ESlateVisibility::Visible);
+		}
+	}	
 }
 
 void UMainWidgetBase::InspectItem(AActor* Actor)
