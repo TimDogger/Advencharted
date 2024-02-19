@@ -169,7 +169,6 @@ void AActorInspectorBase::PreCaptureSetup(AActor* NewActor)
 
 void AActorInspectorBase::SetupPrimitives(bool bForCapture)
 {
-	return;
 	for (auto PrimitiveComponent : PrimitiveComponents)
 	{
 		PrimitiveComponent->SetLightingChannels(!bForCapture, bForCapture, false);

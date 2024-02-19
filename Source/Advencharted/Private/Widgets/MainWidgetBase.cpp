@@ -90,12 +90,17 @@ void UMainWidgetBase::OnInspectorVisibilityChanged(ESlateVisibility InVisibility
 		{
 			InteractionWidget.Value->SetVisibility(ESlateVisibility::Collapsed);
 		}
+		InteractionKeyWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 	else
 	{
 		for (auto InteractionWidget : InteractionWidgets)
 		{
 			InteractionWidget.Value->SetVisibility(ESlateVisibility::Visible);
+		}
+		if (MainCharacter->InteractionComponent->GetCurrentInteraction())
+		{
+			InteractionKeyWidget->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
 }

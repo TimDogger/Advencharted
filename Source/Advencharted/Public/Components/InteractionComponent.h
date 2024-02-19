@@ -16,7 +16,7 @@ class ADVENCHARTED_API UInteractionComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Interaction")
+	UPROPERTY(BlueprintReadOnly, Category = "Interaction")
 	TObjectPtr<USphereComponent> InteractionSphere;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
@@ -37,10 +37,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnInteractionUpdated OnCurrentInteractionUpdated;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
+	UPROPERTY(BlueprintReadWrite, Category = "Interaction")
 	FOnInteractionUpdated OnInteractionFound;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
+	UPROPERTY(BlueprintReadWrite, Category = "Interaction")
 	FOnInteractionUpdated OnInteractionLost;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")

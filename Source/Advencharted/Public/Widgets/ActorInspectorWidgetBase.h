@@ -46,6 +46,12 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
 	UTextureRenderTarget2D* ItemRenderTarget;
 
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
+	bool bRotating = false;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
+	FRotator CurrentRotation = FRotator::ZeroRotator;
+
 private:
 	UPROPERTY()
 	TObjectPtr<AActor> InspectedActor = nullptr;
@@ -55,6 +61,12 @@ public:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 	void InitializeInspectorWidget(AActor* Actor);
+	virtual FReply NativeOnMouseMove(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+
+	UFUNCTION(BlueprintCallable, Category = "Advenchanted|MainWidgetBase")
+	void AddRotation(FRotator Delta);
 
 	UFUNCTION(BlueprintCallable, Category = "Advenchanted|MainWidgetBase")
 	void UpdateItemImage();

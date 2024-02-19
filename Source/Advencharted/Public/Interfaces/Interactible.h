@@ -48,4 +48,10 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
 	FVector GetInteractableLocation(bool& bWorldLocation);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	FText GetItemName();
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	FText GetItemDescription();
 };
