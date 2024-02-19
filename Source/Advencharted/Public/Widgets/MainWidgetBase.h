@@ -33,6 +33,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
 	TObjectPtr<class AADV_MainCharacterBase> MainCharacter;
 
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
+	TObjectPtr<APlayerCameraManager> CameraManager;
+
+private:
+	UPROPERTY()
+	TArray<AActor*> ActorsToIgnore;
+
 public:
 	UMainWidgetBase(const FObjectInitializer& ObjectInitializer);
 	
