@@ -30,22 +30,23 @@ void UInteractionComponent::UpdateInteraction()
 		if (CurrentInteraction)
 		{
 			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction->GetOwner(), GetOwner(),
-															CurrentInteraction);
+			                                            CurrentInteraction);
 		}
 		return;
 	}
-	
-	auto CameraForward = UKismetMathLibrary::GetForwardVector(
-		GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraRotation());
+
+	auto CameraRotation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraRotation();
+	auto CameraForward = UKismetMathLibrary::GetForwardVector(CameraRotation);
+	auto CameraLeft = UKismetMathLibrary::NegateVector(UKismetMathLibrary::GetRightVector(CameraRotation));
 
 	auto CameraLocation = GetWorld()->GetFirstPlayerController()->PlayerCameraManager->GetCameraLocation();
+	auto TraceEnd = CameraLocation + CameraForward * InteractionTraceLength + CameraLeft * CameraLeftOffset;
 
 	TArray<FHitResult> HitResults;
+	TArray<AActor*> ActorsToIgnore = {GetOwner()};
 	EDrawDebugTrace::Type DebugType = bDrawDebug ? EDrawDebugTrace::ForOneFrame : EDrawDebugTrace::None;
-	UKismetSystemLibrary::SphereTraceMulti(GetWorld(), CameraLocation,
-	                                       CameraLocation + CameraForward * InteractionTraceLength,
-	                                       InteractionTraceRadius, TraceType,
-	                                       false, {}, DebugType, HitResults, true);
+	UKismetSystemLibrary::SphereTraceMulti(GetWorld(), CameraLocation, TraceEnd, InteractionTraceRadius, TraceType,
+	                                       false, ActorsToIgnore, DebugType, HitResults, true);
 
 	TTuple<UPrimitiveComponent*, float> NewInteracion = TTuple<UPrimitiveComponent*, float>(nullptr, -1.0f);
 	for (const auto& HitResult : HitResults)
@@ -70,11 +71,11 @@ void UInteractionComponent::UpdateInteraction()
 		if (CurrentInteraction)
 		{
 			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction->GetOwner(), GetOwner(),
-			                                                CurrentInteraction);
+			                                            CurrentInteraction);
 		}
 		CurrentInteraction = NewInteracion.Key;
 		IInteractable::Execute_OnReadyToInteract(CurrentInteraction->GetOwner(), GetOwner(),
-		                                             CurrentInteraction);
+		                                         CurrentInteraction);
 		OnCurrentInteractionUpdated.Broadcast(CurrentInteraction);
 	}
 	else
@@ -82,7 +83,7 @@ void UInteractionComponent::UpdateInteraction()
 		if (CurrentInteraction)
 		{
 			IInteractable::Execute_OnNotReadyToInteract(CurrentInteraction->GetOwner(), GetOwner(),
-			                                                CurrentInteraction);
+			                                            CurrentInteraction);
 		}
 		CurrentInteraction = nullptr;
 		OnCurrentInteractionUpdated.Broadcast(CurrentInteraction);
@@ -90,8 +91,9 @@ void UInteractionComponent::UpdateInteraction()
 }
 
 void UInteractionComponent::OnOverlapBegin_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                           UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-                                           const FHitResult& SweepResult)
+                                                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex,
+                                                          bool bFromSweep,
+                                                          const FHitResult& SweepResult)
 {
 	if (OtherActor->Implements<UInteractable>())
 	{
@@ -105,15 +107,15 @@ void UInteractionComponent::OnOverlapBegin_Implementation(UPrimitiveComponent* O
 			}
 			else return;
 		}
-		IInteractable::Execute_OnInteractionFound(OtherActor, GetOwner(), InteractablePrimitive);		
-		
+		IInteractable::Execute_OnInteractionFound(OtherActor, GetOwner(), InteractablePrimitive);
+
 		InteractableComponents.Add(InteractablePrimitive);
 		OnInteractionFound.Broadcast(InteractablePrimitive);
 	}
 }
 
 void UInteractionComponent::OnOverlapEnd_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                         UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+                                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor->Implements<UInteractable>())
 	{
@@ -145,7 +147,8 @@ void UInteractionComponent::BeginPlay()
 
 	// Do a delayed interaction sphere creation to avoid InteractionWidgets not being added to the HUD in the first frame
 	FTimerHandle TimerHandle;
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UInteractionComponent::CreateIntearctionSphere, 0.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UInteractionComponent::CreateIntearctionSphere, 0.5f,
+	                                       false);
 }
 
 void UInteractionComponent::CreateIntearctionSphere()

@@ -31,6 +31,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
 	float InteractionTraceRadius = 30.0f;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Interaction")
+	float CameraLeftOffset = 10.0f;
+
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnInteractionUpdated OnCurrentInteractionUpdated;
 
