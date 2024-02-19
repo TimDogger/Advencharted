@@ -12,7 +12,7 @@ void AADV_CameraManagerBase::UpdateViewTargetInternal(FTViewTarget& OutVT, float
 	FVector X = OutVT.Target->GetActorForwardVector() * CameraRootOffset.X;
 	FVector Y = OutVT.Target->GetActorRightVector() * CameraRootOffset.Y;
 	FVector Z = OutVT.Target->GetActorUpVector() * CameraRootOffset.Z;
-	FVector StartTraceLocation = CurrentLocation + X + Y + Z;
+	FVector StartTraceLocation = CurrentLocation + X + Z;
 
 	FRotator ControlRotation = GetOwningPlayerController()->GetControlRotation();
 	ControlRotation.Yaw += 180;
@@ -24,8 +24,8 @@ void AADV_CameraManagerBase::UpdateViewTargetInternal(FTViewTarget& OutVT, float
 	{
 		ControlRotation.Pitch = FMath::Clamp(ControlRotation.Pitch, 360 - PitchLimit, 360 + PitchLimit);	
 	}
-	FVector EndTraceLocation = UKismetMathLibrary::GetForwardVector(ControlRotation) * Distance + StartTraceLocation;
-	FRotator CameraRotation = UKismetMathLibrary::FindLookAtRotation(EndTraceLocation, StartTraceLocation);
+	FVector EndTraceLocation = UKismetMathLibrary::GetForwardVector(ControlRotation) * Distance + StartTraceLocation + X + Y;
+	FRotator CameraRotation = UKismetMathLibrary::FindLookAtRotation(EndTraceLocation, StartTraceLocation + Y);
 	
 	FHitResult HitResult;
 	TArray<AActor*> ActorsToIgnore = {OutVT.Target};
