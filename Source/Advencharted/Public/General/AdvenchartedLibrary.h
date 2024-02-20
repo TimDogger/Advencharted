@@ -3,13 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractionDefinition.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AdvenchartedLibrary.generated.h"
 
-/**
- * 
- */
+class UInteractionDefinition;
+
 UCLASS()
 class ADVENCHARTED_API UAdvenchartedLibrary : public UBlueprintFunctionLibrary
 {

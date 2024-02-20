@@ -15,22 +15,22 @@ class ADVENCHARTED_API AADV_CameraManagerBase : public APlayerCameraManager
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
-	float Distance = 400.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Advenchanted|Camera")
+	float Distance = 100.0f;
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Advenchanted|Camera")
+	float MinDistance = 40.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Advenchanted|Camera")
 	float LocationInterpSpeed = 10.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
-	float PitchLimit = 80.0f;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Advenchanted|Camera")
+	float PitchLimit = 89.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
-	FVector CameraRootOffset = FVector(0.0f, 0.0f, 0.0f);
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Advenchanted|Camera")
+	FVector CameraRootOffset = FVector(0.0f, 50.0f, 50.0f);
 
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
-	FVector CameraOffset = FVector(0.0f, 0.0f, 0.0f);
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Camera")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Advenchanted|Camera")
 	float CameraTraceRadius = 10.0f;
 
 protected:
@@ -39,6 +39,6 @@ protected:
 public:
 	virtual void UpdateViewTargetInternal(FTViewTarget& OutVT, float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable, Category = "Camera")
+	UFUNCTION(BlueprintCallable, Category = "Advenchanted|Camera")
 	void AddRotation(float DeltaYaw, float DeltaPitch);
 };

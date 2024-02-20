@@ -10,7 +10,7 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "General/AdvenchartedLogCategory.h"
 #include "General/ADV_HUD_Base.h"
-#include "Interfaces/Interactible.h"
+#include "..\..\Public\Interfaces\Interactable.h"
 
 void UActorInspectorWidgetBase::NativeConstruct()
 {

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "Interactible.generated.h"
+#include "Interactable.generated.h"
 
 // This class does not need to be modified.
 UINTERFACE()
@@ -43,15 +43,15 @@ public:
 	UFUNCTION(BlueprintNativeEvent, Category = "Interactible")
 	UInteractionDefinition* GetInteractionDefinition();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Advenchanted|Interaction")
 	UPrimitiveComponent* GetInteractableComponent();
 	
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Advenchanted|Interaction")
 	FVector GetInteractableLocation(bool& bWorldLocation);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Advenchanted|Interaction")
 	FText GetItemName();
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interactible")
+	UFUNCTION(BlueprintImplementableEvent, Category = "Advenchanted|Interaction")
 	FText GetItemDescription();
 };

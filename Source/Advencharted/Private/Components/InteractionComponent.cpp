@@ -4,12 +4,12 @@
 #include "Components/InteractionComponent.h"
 
 #include "General/AdvenchartedLibrary.h"
-#include "Interfaces/Interactible.h"
+#include "..\..\Public\Interfaces\Interactable.h"
+#include "General/InteractionDefinition.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
-// Sets default values for this component's properties
 UInteractionComponent::UInteractionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;

@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "Actors/ActorInspectorBase.h"
 #include "GameFramework/HUD.h"
-#include "Widgets/ActorInspectorWidgetBase.h"
 #include "Widgets/InteractionWidgetBase.h"
 #include "Widgets/MainWidgetBase.h"
 #include "ADV_HUD_Base.generated.h"
@@ -32,14 +31,13 @@ public:
 	UPROPERTY(BlueprintReadOnly, Category = "Advenchanted|HUD")
 	TArray<TObjectPtr<UInteractionWidgetBase>> InteractionWidgets;	
 
-	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|MainWidgetBase")
+	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD")
 	TObjectPtr<class UInteractionDefinition> DefaultInteractionDefinition;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Advenchanted|HUD")
 	TObjectPtr<AActorInspectorBase> Inspector;
 
-public:
-	
+public:	
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Advenchanted|HUD")

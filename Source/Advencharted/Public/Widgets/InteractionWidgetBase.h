@@ -14,7 +14,7 @@ class ADVENCHARTED_API UInteractionWidgetBase : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|InteractionWidgetBase")
 	TObjectPtr<UImage> InteractionImage;
 
 protected:
@@ -28,9 +28,9 @@ public:
 	UInteractionWidgetBase(const FObjectInitializer& ObjectInitializer);
 	UCanvasPanelSlot* GetCanvasPanelSlot() const;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Advenchanted|InteractionWidgetBase")
 	AActor* GetInteractableActor();
 	
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Advencharted|InteractionWidgetBase")
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Advenchanted|InteractionWidgetBase")
 	void InitializeInteractionWidget(AActor* Actor);
 };

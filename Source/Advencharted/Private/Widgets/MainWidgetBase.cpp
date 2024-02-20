@@ -9,8 +9,10 @@
 #include "Components/TextBlock.h"
 #include "General/AdvenchartedLibrary.h"
 #include "General/AdvenchartedLogCategory.h"
-#include "Interfaces/Interactible.h"
+#include "General/InteractionDefinition.h"
+#include "Interfaces/Interactable.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Widgets/ActorInspectorWidgetBase.h"
 #include "Widgets/InteractionKeyWidgetBase.h"
 
 UMainWidgetBase::UMainWidgetBase(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)

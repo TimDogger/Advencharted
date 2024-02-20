@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Interfaces/Interactible.h"
+#include "Interfaces/Interactable.h"
 #include "InteractableActorBase.generated.h"
 
 UCLASS(Abstract)
@@ -13,6 +13,5 @@ class ADVENCHARTED_API AInteractableActorBase : public AActor, public IInteracta
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	AInteractableActorBase();
 };

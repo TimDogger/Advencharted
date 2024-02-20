@@ -32,12 +32,16 @@ void AADV_CameraManagerBase::UpdateViewTargetInternal(FTViewTarget& OutVT, float
 	UKismetSystemLibrary::SphereTraceSingle(this, StartTraceLocation, EndTraceLocation, CameraTraceRadius,
 	                                        UEngineTypes::ConvertToTraceType(ECC_Camera), false, ActorsToIgnore,
 	                                        EDrawDebugTrace::None, HitResult, true);
-
+	
 	OutVT.POV.Rotation = CameraRotation;
 	FVector NewLocation = HitResult.bBlockingHit ? HitResult.Location : EndTraceLocation;
+	if (HitResult.bBlockingHit && HitResult.Distance < MinDistance)
+	{
+		NewLocation = StartTraceLocation + UKismetMathLibrary::NegateVector(UKismetMathLibrary::GetForwardVector(CameraRotation)) * MinDistance;
+	}
+
 	OutVT.POV.Location = FMath::VInterpTo(GetCameraLocation(), NewLocation, DeltaTime, LocationInterpSpeed);
 	FTransform CameraTransform = FTransform(CameraRotation, OutVT.POV.Location);
-	OutVT.POV.Location += CameraTransform.TransformVector(CameraOffset);
 }
 
 void AADV_CameraManagerBase::AddRotation(float DeltaYaw, float DeltaPitch)
