@@ -5,7 +5,7 @@
 
 #include "General/AdvenchartedLogCategory.h"
 #include "General/ADV_HUD_Base.h"
-#include "..\..\Public\Interfaces\Interactable.h"
+#include "Interfaces/Interactable.h"
 
 UInteractionDefinition* UAdvenchartedLibrary::GetInteractionDefinitionForActor(UObject* WorldContextObject, AActor* Actor)
 {

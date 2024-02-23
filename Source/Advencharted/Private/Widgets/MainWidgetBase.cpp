@@ -5,6 +5,8 @@
 
 #include "Actors/ADV_MainCharacterBase.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
+#include "Components/CanvasPanel.h"
+#include "Components/CanvasPanelSlot.h"
 #include "Components/InteractionComponent.h"
 #include "Components/TextBlock.h"
 #include "General/AdvenchartedLibrary.h"
@@ -14,6 +16,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Widgets/ActorInspectorWidgetBase.h"
 #include "Widgets/InteractionKeyWidgetBase.h"
+#include "Widgets/InteractionWidgetBase.h"
 
 UMainWidgetBase::UMainWidgetBase(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)
 {
@@ -131,7 +134,7 @@ void UMainWidgetBase::ShowInteractionWidgetFor(UPrimitiveComponent* InteractionC
 	}
 
 	auto InteractionWidget = CreateWidget<UInteractionWidgetBase>(GetOwningPlayer(),
-	                                                              InteractionDefinition->InteractionWidgetClass);
+	                                                              InteractionDefinition->InteractionWidgetClass.Get());
 	MainCanvas->AddChildToCanvas(InteractionWidget);
 	InteractionWidget->InitializeInteractionWidget(Actor);
 	InteractionWidgets.Add(Actor, InteractionWidget);

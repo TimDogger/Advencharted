@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "ADV_MainCharacterBase.generated.h"
 
+class UInteractionComponent;
+
 UCLASS()
 class ADVENCHARTED_API AADV_MainCharacterBase : public ACharacter
 {
@@ -13,7 +15,7 @@ class ADVENCHARTED_API AADV_MainCharacterBase : public ACharacter
 
 public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainCharacterBase")
-	TObjectPtr<class UInteractionComponent> InteractionComponent;
+	TObjectPtr<UInteractionComponent> InteractionComponent;
 
 public:
 	AADV_MainCharacterBase();

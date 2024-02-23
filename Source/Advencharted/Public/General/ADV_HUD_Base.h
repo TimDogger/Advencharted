@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/ActorInspectorBase.h"
 #include "GameFramework/HUD.h"
-#include "Widgets/InteractionWidgetBase.h"
-#include "Widgets/MainWidgetBase.h"
 #include "ADV_HUD_Base.generated.h"
+
+class UMainWidgetBase;
+class UInteractionWidgetBase;
+class AActorInspectorBase;
+class UInteractionDefinition;
 
 UCLASS(Abstract)
 class ADVENCHARTED_API AADV_HUD_Base : public AHUD
@@ -32,7 +34,7 @@ public:
 	TArray<TObjectPtr<UInteractionWidgetBase>> InteractionWidgets;	
 
 	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|HUD")
-	TObjectPtr<class UInteractionDefinition> DefaultInteractionDefinition;
+	TObjectPtr<UInteractionDefinition> DefaultInteractionDefinition;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Advenchanted|HUD")
 	TObjectPtr<AActorInspectorBase> Inspector;

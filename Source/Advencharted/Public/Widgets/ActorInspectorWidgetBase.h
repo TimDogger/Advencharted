@@ -4,12 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "UObject/Object.h"
 #include "ActorInspectorWidgetBase.generated.h"
 
-/**
- * 
- */
+class UTextBlock;
+class UMultiLineEditableTextBox;
+class UButton;
+class UImage;
+class AActor;
+class UTextureRenderTarget2D;
+class AActorInspectorBase;
+
 UCLASS(Abstract)
 class ADVENCHARTED_API UActorInspectorWidgetBase : public UUserWidget
 {
@@ -17,25 +21,25 @@ class ADVENCHARTED_API UActorInspectorWidgetBase : public UUserWidget
 
 public:
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<class UTextBlock> ItemNameTextBlock;
+	TObjectPtr<UTextBlock> ItemNameTextBlock;
 	
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<class UMultiLineEditableTextBox> ItemDescriptionTextBlock;
+	TObjectPtr<UMultiLineEditableTextBox> ItemDescriptionTextBlock;
 	
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
 	TObjectPtr<UTextBlock> TakeTextBlock;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<class UButton> CloseButton;
+	TObjectPtr<UButton> CloseButton;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
 	TObjectPtr<UButton> TakeButton;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<class UImage> InspectorImage;
+	TObjectPtr<UImage> InspectorImage;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<class AActorInspectorBase> Inspector;
+	TObjectPtr<AActorInspectorBase> Inspector;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Advenchanted|MainWidgetBase")
 	FKey CloseKey = EKeys::Escape;

@@ -3,15 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InteractionWidgetBase.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/CanvasPanel.h"
-#include "UObject/Object.h"
 #include "MainWidgetBase.generated.h"
 
-/**
- * 
- */
+class UCanvasPanel;
+class UInteractionKeyWidgetBase;
+class UActorInspectorWidgetBase;
+class UInteractionWidgetBase;
+class AADV_MainCharacterBase;
+class APlayerCameraManager;
+
 UCLASS(Abstract, Blueprintable, BlueprintType)
 class ADVENCHARTED_API UMainWidgetBase : public UUserWidget
 {
@@ -22,16 +23,16 @@ public:
 	TObjectPtr<UCanvasPanel> MainCanvas;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<class UInteractionKeyWidgetBase> InteractionKeyWidget;
+	TObjectPtr<UInteractionKeyWidgetBase> InteractionKeyWidget;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta = (BindWidget), Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<class UActorInspectorWidgetBase> InspectorWidget;
+	TObjectPtr<UActorInspectorWidgetBase> InspectorWidget;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
 	TMap<TObjectPtr<AActor>, TObjectPtr<UInteractionWidgetBase>> InteractionWidgets;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
-	TObjectPtr<class AADV_MainCharacterBase> MainCharacter;
+	TObjectPtr<AADV_MainCharacterBase> MainCharacter;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, Category = "Advenchanted|MainWidgetBase")
 	TObjectPtr<APlayerCameraManager> CameraManager;

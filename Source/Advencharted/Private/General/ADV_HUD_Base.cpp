@@ -2,7 +2,11 @@
 
 
 #include "General/ADV_HUD_Base.h"
+
+#include "Actors/ActorInspectorBase.h"
 #include "General/AdvenchartedLogCategory.h"
+#include "Widgets/InteractionWidgetBase.h"
+#include "Widgets/MainWidgetBase.h"
 
 void AADV_HUD_Base::BeginPlay()
 {

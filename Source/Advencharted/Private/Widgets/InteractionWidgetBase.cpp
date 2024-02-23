@@ -3,6 +3,7 @@
 
 #include "Widgets/InteractionWidgetBase.h"
 
+#include "Components/CanvasPanelSlot.h"
 #include "General/AdvenchartedLogCategory.h"
 
 UInteractionWidgetBase::UInteractionWidgetBase(const FObjectInitializer& ObjectInitializer): Super(ObjectInitializer)

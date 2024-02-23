@@ -3,10 +3,10 @@
 
 #include "Components/InteractionComponent.h"
 
-#include "General/AdvenchartedLibrary.h"
-#include "..\..\Public\Interfaces\Interactable.h"
-#include "General/InteractionDefinition.h"
+#include "Components/SphereComponent.h"
+#include "Interfaces/Interactable.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "General/InteractionDefinition.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 

@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "UObject/Object.h"
 #include "ActorInspectorBase.generated.h"
+
+class USpringArmComponent;
 
 UCLASS(Abstract, Blueprintable, BlueprintType)
 class ADVENCHARTED_API AActorInspectorBase : public AActor

@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/CanvasPanelSlot.h"
-#include "Components/Image.h"
 #include "InteractionWidgetBase.generated.h"
+
+class UImage;
+class UCanvasPanelSlot;
 
 UCLASS(Abstract, Blueprintable, BlueprintType)
 class ADVENCHARTED_API UInteractionWidgetBase : public UUserWidget

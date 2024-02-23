@@ -10,7 +10,10 @@
 #include "Engine/TextureRenderTarget2D.h"
 #include "General/AdvenchartedLogCategory.h"
 #include "General/ADV_HUD_Base.h"
-#include "..\..\Public\Interfaces\Interactable.h"
+#include "Interfaces/Interactable.h"
+#include "Actors/ActorInspectorBase.h"
+#include "Components/Image.h"
+#include "GameFramework/SpringArmComponent.h"
 
 void UActorInspectorWidgetBase::NativeConstruct()
 {
